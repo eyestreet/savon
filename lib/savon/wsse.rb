@@ -45,12 +45,17 @@ module Savon
       self.digest = digest
     end
 
-    attr_accessor :username, :password, :created_at, :expires_at, :signature, :verify_response
-    
+    def edxl_credentials(logon_user, logon_cog_id)
+      self.logon_user   = logon_user
+      self.logon_cog_id = logon_cog_id
+    end
+
+    attr_accessor :username, :password, :created_at, :expires_at, :signature, :verify_response, :logon_user, :logon_cog_id
+
     def sign_with=(klass)
       @signature = klass
     end
-    
+
     def signature?
       !!@signature
     end
@@ -65,6 +70,11 @@ module Savon
     # Returns whether to generate a wsse:UsernameToken header.
     def username_token?
       username && password
+    end
+
+    # Returns whether to generate a edx:EdxlHeaderTypeDef header.
+    def edxl_header_type_def?
+      logon_user && logon_cog_id
     end
 
     # Returns whether to generate a wsse:Timestamp header.
@@ -89,7 +99,7 @@ module Savon
     # Returns the XML for a WSSE header.
     def to_xml
       @other_xml ||= Gyoku.xml(hash)
-      
+
       xml = if signature?
         signature.to_xml
       elsif username_token?
@@ -99,7 +109,9 @@ module Savon
       else
         ""
       end
-      
+
+      xml = Gyoku.xml(wsse_edxl_header_type_def.merge!(hash)) << xml if edxl_header_type_def?
+
       xml + @other_xml
     end
 
@@ -120,6 +132,17 @@ module Savon
           "wsse:Password" => password,
           :attributes! => { "wsse:Password" => { "Type" => PasswordTextURI } }
       end
+    end
+
+    # Returns a Hash containing edx:EdxlHeaderTypeDef details.
+    def wsse_edxl_header_type_def
+      { "edx:EdxlHeaderTypeDef" => {
+          "logonUser" => logon_user,
+          :attributes! => { "xmlns" => "" },
+          "logonCogId" => logon_cog_id,
+          :attributes! => { "xmlns" => "" }
+        }
+      }
     end
 
     # Returns a Hash containing wsse:Timestamp details.
