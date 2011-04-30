@@ -58,7 +58,7 @@ module Savon
           XML
           xpath.close
 
-          `xml c14n --exc-without-comments #{full_xml.path} #{xpath.path}`
+          `xmlstarlet c14n --exc-without-comments #{full_xml.path} #{xpath.path}`
         ensure
           begin
             # Try to clean up our poop.
@@ -72,7 +72,7 @@ module Savon
         def can_haz_xmlstarlet?
           # Cache "true". We should only have to do this once.
           @_haz_xmlstarlet ||= begin
-            !!(`xml 2>&1`.match /XMLStarlet/)
+            !!(`xmlstarlet 2>&1`.match /XMLStarlet/)
           end
         end
 
