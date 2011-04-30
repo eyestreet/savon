@@ -34,10 +34,10 @@ module Savon
         if soap.signature?
           # First generate the document so that Signature can digest sections
           soap.wsse.signature.document = soap.to_xml(true)
-          
+
           # Then re-generate the document so that Signature can sign the digest
           soap.wsse.signature.document = soap.to_xml(true)
-          
+
           # The third time we generate the document, we should have a signature
           request.body = soap.to_xml(true)
         else
