@@ -73,7 +73,7 @@ module Savon
     end
 
     # Returns whether to generate a edx:EdxlHeaderTypeDef header.
-    def edxl_header_type_def?
+    def cap_header_type_def?
       logon_user && logon_cog_id
     end
 
@@ -110,7 +110,7 @@ module Savon
         ""
       end
 
-      xml = Gyoku.xml(wsse_edxl_header_type_def.merge!(hash)) << xml if edxl_header_type_def?
+      xml = Gyoku.xml(wsse_cap_header_type_def.merge!(hash)) << xml if cap_header_type_def?
 
       xml + @other_xml
     end
@@ -134,13 +134,12 @@ module Savon
       end
     end
 
-    # Returns a Hash containing edx:EdxlHeaderTypeDef details.
-    def wsse_edxl_header_type_def
+    # Returns a Hash containing edx:CAPHeaderTypeDef details.
+    def wsse_cap_header_type_def
       { "edx:EdxlHeaderTypeDef" => {
-          "logonUser" => logon_user,
-          :attributes! => { "xmlns" => "" },
-          "logonCogId" => logon_cog_id,
-          :attributes! => { "xmlns" => "" }
+          "edx:logonUser" => logon_user,
+          "edx:logonCogId" => logon_cog_id,
+          :attributes! => { "edx:logonUser" => {"xmlns" => ""}, "edx:logonCogId" => {"xmlns" => ""} }
         }
       }
     end
