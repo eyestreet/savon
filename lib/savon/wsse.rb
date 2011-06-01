@@ -72,7 +72,7 @@ module Savon
       username && password
     end
 
-    # Returns whether to generate a edx:EdxlHeaderTypeDef header.
+    # Returns whether to generate a edx:CAPHeaderTypeDef header.
     def cap_header_type_def?
       logon_user && logon_cog_id
     end
@@ -136,7 +136,7 @@ module Savon
 
     # Returns a Hash containing edx:CAPHeaderTypeDef details.
     def wsse_cap_header_type_def
-      { "edx:EdxlHeaderTypeDef" => {
+      { "edx:CAPHeaderTypeDef" => {
           "edx:logonUser" => logon_user,
           "edx:logonCogId" => logon_cog_id,
           :attributes! => { "edx:logonUser" => {"xmlns" => ""}, "edx:logonCogId" => {"xmlns" => ""} }
