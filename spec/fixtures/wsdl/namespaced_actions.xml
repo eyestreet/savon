@@ -171,32 +171,42 @@
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="apiSoap" type="tns:apiSoap">
-    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <soapenv:
+binding transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="GetApiKey">
-      <soap:operation soapAction="http://api.example.com/api/User.GetApiKey" style="document"/>
+      <soapenv:
+operation soapAction="http://api.example.com/api/User.GetApiKey" style="document"/>
       <wsdl:input name="User.GetApiKey">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:input>
       <wsdl:output name="User.GetApiKey">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="DeleteClient">
-      <soap:operation soapAction="http://api.example.com/api/Client.Delete" style="document"/>
+      <soapenv:
+operation soapAction="http://api.example.com/api/Client.Delete" style="document"/>
       <wsdl:input name="Client.Delete">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:input>
       <wsdl:output name="Client.Delete">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetClients">
-      <soap:operation soapAction="http://api.example.com/api/User.GetClients" style="document"/>
+      <soapenv:
+operation soapAction="http://api.example.com/api/User.GetClients" style="document"/>
       <wsdl:input name="User.GetClients">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:input>
       <wsdl:output name="User.GetClients">
-        <soap:body use="literal"/>
+        <soapenv:
+body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
@@ -292,7 +302,8 @@
   </wsdl:binding>
   <wsdl:service name="api">
     <wsdl:port name="apiSoap" binding="tns:apiSoap">
-      <soap:address location="https://api.example.com/api/api.asmx"/>
+      <soapenv:
+address location="https://api.example.com/api/api.asmx"/>
     </wsdl:port>
     <wsdl:port name="apiSoap12" binding="tns:apiSoap12">
       <soap12:address location="https://api.example.com/api/api.asmx"/>

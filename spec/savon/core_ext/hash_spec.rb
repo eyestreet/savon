@@ -12,24 +12,32 @@ describe Hash do
   end
 
   describe "#find_soap_header" do
-    it "should return the content from the 'soap:Header' element" do
-      soap_header = { "soap:Envelope" => { "soap:Header" => "content" } }
+    it "should return the content from the 'soapenv:
+Header' element" do
+      soap_header = { "soapenv:
+Envelope" => { "soapenv:
+Header" => "content" } }
       soap_header.find_soap_header.should == "content"
     end
 
-    it "should return an empty Hash in case the 'soap:Header' element could not be found" do
+    it "should return an empty Hash in case the 'soapenv:
+Header' element could not be found" do
       soap_header = { "some_hash" => "content" }
       soap_header.find_soap_header.should == {}
     end
   end
 
   describe "#find_soap_body" do
-    it "should return the content from the 'soap:Body' element" do
-      soap_body = { "soap:Envelope" => { "soap:Body" => "content" } }
+    it "should return the content from the 'soapenv:
+Body' element" do
+      soap_body = { "soapenv:
+Envelope" => { "soapenv:
+Body" => "content" } }
       soap_body.find_soap_body.should == "content"
     end
 
-    it "should return an empty Hash in case the 'soap:Body' element could not be found" do
+    it "should return an empty Hash in case the 'soapenv:
+Body' element could not be found" do
       soap_body = { "some_hash" => "content" }
       soap_body.find_soap_body.should == {}
     end

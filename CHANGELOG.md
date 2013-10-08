@@ -93,15 +93,16 @@
   the SOAP response Hash when a pattern (specified as an Array of Regexps and Symbols) matches the response. If for example
   your response always looks like ".+Response/return" as in:
 
-      <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
+      <soapenv:
+Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soapenv:Body>
           <ns2:authenticateResponse xmlns:ns2="http://v1_0.ws.user.example.com">
             <return>
               <some>thing</some>
             </return>
           </ns2:authenticateResponse>
-        </soap:Body>
-      </soap:Envelope>
+        </soapenv:Body>
+      </soapenv:Envelope>
 
   you could set the response pattern to:
 
@@ -339,8 +340,8 @@ Pay attention to the following list and read the updated Wiki: http://wiki.githu
 
       client.find_user { |soap| soap.body = { :name => "Lucy", :id => 666, :@inorder => [:id, :name] } }
 
-* `Savon::Response#to_hash` now returns the content inside of "soap:Body" instead of trying to go one
-  level deeper and return it's content. The previous implementation only worked when the "soap:Body" element
+* `Savon::Response#to_hash` now returns the content inside of "soapenv:Body" instead of trying to go one
+  level deeper and return it's content. The previous implementation only worked when the "soapenv:Body" element
   contained a single child. See [issue #17](https://github.com/rubiii/savon/issues/17).
 
 * Added `Savon::SOAP#namespace` as a shortcut for setting the "xmlns:wsdl" namespace.

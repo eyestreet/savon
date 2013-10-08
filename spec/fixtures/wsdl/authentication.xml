@@ -44,20 +44,25 @@
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="AuthenticationWebServiceImplServiceSoapBinding" type="tns:AuthenticationWebService">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <soapenv:
+binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="authenticate">
-      <soap:operation soapAction="" style="document" />
+      <soapenv:
+operation soapAction="" style="document" />
       <wsdl:input name="authenticate">
-        <soap:body use="literal" />
+        <soapenv:
+body use="literal" />
       </wsdl:input>
       <wsdl:output name="authenticateResponse">
-        <soap:body use="literal" />
+        <soapenv:
+body use="literal" />
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="AuthenticationWebServiceImplService">
     <wsdl:port binding="tns:AuthenticationWebServiceImplServiceSoapBinding" name="AuthenticationWebServiceImplPort">
-      <soap:address location="http://example.com/validation/1.0/AuthenticationService" />
+      <soapenv:
+address location="http://example.com/validation/1.0/AuthenticationService" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

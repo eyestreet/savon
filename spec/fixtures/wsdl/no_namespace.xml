@@ -78,38 +78,49 @@
     </operation>
   </portType>
   <binding name="ApiApiBinding" type="typens:ApiApiPort">
-    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+    <soapenv:
+binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
     <operation name="GetUserLoginById">
-      <soap:operation soapAction="/api/api/GetUserLoginById"/>
+      <soapenv:
+operation soapAction="/api/api/GetUserLoginById"/>
       <input>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </input>
       <output>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </output>
     </operation>
     <operation name="GetAllContacts">
-      <soap:operation soapAction="/api/api/GetAllContacts"/>
+      <soapenv:
+operation soapAction="/api/api/GetAllContacts"/>
       <input>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </input>
       <output>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </output>
     </operation>
     <operation name="SearchUser">
-      <soap:operation soapAction="/api/api/SearchUser"/>
+      <soapenv:
+operation soapAction="/api/api/SearchUser"/>
       <input>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </input>
       <output>
-        <soap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
+        <soapenv:
+body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:ActionWebService" use="encoded"/>
       </output>
     </operation>
   </binding>
   <service name="ApiService">
     <port name="ApiApiPort" binding="typens:ApiApiBinding">
-      <soap:address location="http://example.com/api/api"/>
+      <soapenv:
+address location="http://example.com/api/api"/>
     </port>
   </service>
 </definitions>

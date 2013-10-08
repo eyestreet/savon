@@ -1,5 +1,7 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <soapenv:Body>
+<soapenv:
+Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soapenv:
+Body>
       <MultiNamespacedEntryResponse xmlns="http://www.example.com/BusinessRulesEngine/xsd">
          <history>
                 <ns10:case xmlns:ns10="http://www.example.com/Common/xsd">
@@ -14,5 +16,7 @@
                 </ns11:case>
          </history>
       </MultiNamespacedEntryResponse>
-   </soapenv:Body>
-</soapenv:Envelope>
+   </soapenv:
+Body>
+</soapenv:
+Envelope>

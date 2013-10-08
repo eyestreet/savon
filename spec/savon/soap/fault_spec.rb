@@ -41,11 +41,13 @@ describe Savon::SOAP::Fault do
       end
 
       it "should return a SOAP 1.1 fault message" do
-        soap_fault.send(method).should == "(soap:Server) Fault occurred while processing."
+        soap_fault.send(method).should == "(soapenv:
+Server) Fault occurred while processing."
       end
 
       it "should return a SOAP 1.2 fault message" do
-        soap_fault2.send(method).should == "(soap:Sender) Sender Timeout"
+        soap_fault2.send(method).should == "(soapenv:
+Sender) Sender Timeout"
       end
 
       it "should return a SOAP fault message (with different namespaces)" do
@@ -63,7 +65,8 @@ describe Savon::SOAP::Fault do
       soap_fault.to_hash.should == {
         :fault => {
           :faultstring => "Fault occurred while processing.",
-          :faultcode   => "soap:Server"
+          :faultcode   => "soapenv:
+Server"
         }
       }
     end
@@ -73,7 +76,8 @@ describe Savon::SOAP::Fault do
         :fault => {
           :detail => { :max_time => "P5M" },
           :reason => { :text => "Sender Timeout" },
-          :code   => { :value => "soap:Sender", :subcode => { :value => "m:MessageTimeout" } }
+          :code   => { :value => "soapenv:
+Sender", :subcode => { :value => "m:MessageTimeout" } }
         }
       }
     end

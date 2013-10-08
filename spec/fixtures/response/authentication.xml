@@ -1,5 +1,7 @@
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-   <soap:Body>
+<soapenv:
+Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:
+Body>
       <ns2:authenticateResponse xmlns:ns2="http://v1_0.ws.user.example.com">
          <return>
             <authenticationValue>
@@ -10,5 +12,7 @@
             <success>true</success>
          </return>
       </ns2:authenticateResponse>
-   </soap:Body>
-</soap:Envelope>
+   </soapenv:
+Body>
+</soapenv:
+Envelope>

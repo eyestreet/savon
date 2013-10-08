@@ -12,7 +12,8 @@
     <portType name="BlogSoap">
     </portType>
     <binding name="BlogSoap">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <soapenv:
+binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <operation name="Post" />
         <operation name="Post11only" />
     </binding>

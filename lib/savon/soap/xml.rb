@@ -81,7 +81,7 @@ module Savon
       # Sets the SOAP envelope namespace.
       attr_writer :env_namespace
 
-      # Returns the SOAP envelope namespace. Defaults to :env.
+      # Returns the SOAP envelope namespace. Defaults to :soapenv.
       def env_namespace
         @env_namespace ||= :soapenv
       end

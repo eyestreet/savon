@@ -23,13 +23,13 @@ module Savon
         self
       end unless defined? deep_merge!
 
-      # Returns the values from the soap:Header element or an empty Hash in case the element could
+      # Returns the values from the soapenv:Header element or an empty Hash in case the element could
       # not be found.
       def find_soap_header
         find_soap_element /.+:Header/
       end
 
-      # Returns the values from the soap:Body element or an empty Hash in case the element could
+      # Returns the values from the soapenv:Body element or an empty Hash in case the element could
       # not be found.
       def find_soap_body
         find_soap_element /.+:Body/

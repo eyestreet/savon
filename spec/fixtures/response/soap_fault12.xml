@@ -1,8 +1,12 @@
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:m="http://www.example.org/timeouts">
-  <soap:Body>
-    <soap:Fault>
+<soapenv:
+Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:m="http://www.example.org/timeouts">
+  <soapenv:
+Body>
+    <soapenv:
+Fault>
       <Code>
-        <Value>soap:Sender</Value>
+        <Value>soapenv:
+Sender</Value>
         <Subcode>
           <Value>m:MessageTimeout</Value>
         </Subcode>
@@ -13,6 +17,9 @@
       <Detail>
         <m:MaxTime>P5M</m:MaxTime>
       </Detail>
-    </soap:Fault>
-  </soap:Body>
-</soap:Envelope>
+    </soapenv:
+Fault>
+  </soapenv:
+Body>
+</soapenv:
+Envelope>
