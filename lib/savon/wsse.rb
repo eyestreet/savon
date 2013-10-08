@@ -110,7 +110,7 @@ module Savon
         ""
       end
 
-      xml = Gyoku.xml(wsse_cap_header_type_def.merge!(hash)) << xml if cap_header_type_def?
+      xml = xml << Gyoku.xml(hash.merge(wsse_cap_header_type_def)) if cap_header_type_def?
 
       xml + @other_xml
     end
@@ -139,7 +139,6 @@ module Savon
       { "edx:CAPHeaderTypeDef" => {
           "edx:logonUser" => logon_user,
           "edx:logonCogId" => logon_cog_id,
-          :attributes! => { "edx:logonUser" => {"xmlns" => ""}, "edx:logonCogId" => {"xmlns" => ""} }
         }
       }
     end
@@ -156,7 +155,7 @@ module Savon
       {
         "wsse:Security" => {
           "wsse:#{tag}" => hash,
-          :attributes! => { "wsse:#{tag}" => { "wsu:Id" => "#{tag}-#{count}", "xmlns:wsu" => WSUNamespace } }
+          :attributes! => { "wsse:#{tag}" => { "wsu:Id" => "#{tag}-#{count}" } }
         },
         :attributes! => { "wsse:Security" => { "xmlns:wsse" => WSENamespace } }
       }
