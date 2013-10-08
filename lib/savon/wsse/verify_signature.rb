@@ -17,15 +17,20 @@ module Savon
         @document = create_document
       end
 
-      def generate_digest(element)
+      def generate_digest(element, algorithm=nil)
         element = element_for_xpath(element) if element.is_a? String
         xml = canonicalize(element)
-        digest(xml).strip
+        digest(xml, algorithm).strip
       end
       
       def supplied_digest(element)
         element = element_for_xpath(element) if element.is_a? String
         find_digest_value element.attributes["Id"]
+      end
+      
+      def digest_algorithm(element)
+        element = element_for_xpath(element) if element.is_a? String
+        element.attributes["Algorithm"]
       end
       
       def signature_value
@@ -54,15 +59,16 @@ module Savon
 
       def verify
         REXML::XPath.each(document, "//wsse:Security/Signature/SignedInfo/Reference") do |ref|
+          digest_algorithm = digest_algorithm( ref.elements["DigestMethod"])
           element_id = ref.attributes["URI"][1..-1] # strip leading '#'
           element = element_for_xpath(%(//*[@wsu:Id="#{element_id}"]))
-          raise InvalidDigest, "Invalid Digest for #{element_id}" unless supplied_digest(element) == generate_digest(element)
+          raise InvalidDigest, "Invalid Digest for #{element_id}" unless supplied_digest(element) == generate_digest(element, digest_algorithm)
         end
 
         data = canonicalize(signed_info)
         signature = Base64.decode64(signature_value)
 
-        certificate.public_key.verify(OpenSSL::Digest::SHA1.new, signature, data) or raise InvalidSignedValue, "Could not verify the signature value"
+        certificate.public_key.verify(OpenSSL::Digest::SHA256.new, signature, data) or raise InvalidSignedValue, "Could not verify the signature value"
       end
       
       def create_document
@@ -85,8 +91,19 @@ module Savon
         REXML::XPath.first(document, %(//wsse:Security/Signature/SignedInfo/Reference[@URI="##{id}"]/DigestValue)).text
       end
       
-      def digest(string)
-        Base64.encode64 OpenSSL::Digest::SHA1.digest(string)
+      def find_digest_algorithm(id)
+        REXML::XPath.first(document, %(//wsse:Security/Signature/SignedInfo/Reference[@URI="##{id}"]/Method)).text
+      end
+      
+      def digest(string, algorithm)
+        case algorithm
+        when SHA1DigestAlgorithm
+          Base64.encode64(Digest::SHA1.digest( string )).strip
+        when SHA256DigestAlgorithm
+          Base64.encode64(Digest::SHA2.digest( string )).strip
+        else
+          Base64.encode64(Digest::SHA1.digest( string )).strip
+        end
       end
     end
   end

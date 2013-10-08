@@ -9,7 +9,7 @@ describe Savon::WSSE::VerifySignature do
     signature.should be_valid
   end
   
-  let(:security_section) { response.basic_hash["env:Envelope"]["soapenv:Header"]["wsse:Security"] }
+  let(:security_section) { response.basic_hash["soapenv:Envelope"]["soapenv:Header"]["wsse:Security"] }
   
   context 'the signaturevalue' do
     let(:signature_value) { security_section["Signature"]["SignatureValue"] }
@@ -42,7 +42,7 @@ describe Savon::WSSE::VerifySignature do
 
   context 'the digests' do
     
-    { :timestamp => '//wsse:Security//wsu:Timestamp', :body => '//env:Body[@Id@=Body]' }.each do |section, xpath|
+    { :timestamp => '//wsse:Security//wsu:Timestamp', :body => '//soapenv:Body[@Id@=Body]' }.each do |section, xpath|
       context "the #{section} section" do
         let(:supplied_digest) { security_section["Signature"]["SignedInfo"]["Reference"].find { |t| t["URI"].match /#{section}/i }["DigestValue"] }
 
@@ -51,7 +51,7 @@ describe Savon::WSSE::VerifySignature do
         end
   
         it "should generate the correct digest" do
-          signature.generate_digest(xpath).should == supplied_digest
+          signature.generate_digest(xpath, SHA256DigestAlgorithm).should == supplied_digest
         end
   
   

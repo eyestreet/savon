@@ -155,7 +155,7 @@ module Savon
       {
         "wsse:Security" => {
           "wsse:#{tag}" => hash,
-          :attributes! => { "wsse:#{tag}" => { "wsu:Id" => "#{tag}-#{count}" } }
+          :attributes! => { "wsse:#{tag}" => { "wsu:Id" => "#{tag}-#{count}", "xmlns:wsu" => WSUNamespace  } }
         },
         :attributes! => { "wsse:Security" => { "xmlns:wsse" => WSENamespace } }
       }

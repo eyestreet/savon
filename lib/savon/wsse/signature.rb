@@ -17,16 +17,21 @@ module Savon
       attr_accessor :document
 
       ExclusiveXMLCanonicalizationAlgorithm = 'http://www.w3.org/2001/10/xml-exc-c14n#'.freeze
+      TransformAlgorithm = 'http://www.w3.org/2001/10/xml-exc-c14n#'.freeze
       RSASHA1SignatureAlgorithm = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'.freeze
       SHA1DigestAlgorithm = 'http://www.w3.org/2000/09/xmldsig#sha1'.freeze
+      RSASHA256SignatureAlgorithm = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'.freeze
+      SHA256DigestAlgorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'.freeze
 
       X509v3ValueType = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3'.freeze
       Base64EncodingType = 'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary'.freeze
 
       SignatureNamespace = 'http://www.w3.org/2000/09/xmldsig#'.freeze
 
-      def initialize(certs = Certs.new)
+      def initialize(certs = Certs.new, digest_algorithm = SHA256DigestAlgorithm, signature_algorithm = RSASHA256SignatureAlgorithm)
         @certs = certs
+        @digest_algorithm = digest_algorithm
+        @signature_algorithm = signature_algorithm
       end
 
       def have_document?
@@ -71,6 +76,7 @@ module Savon
           "wsse:Security" => security,
           :attributes! => { "wsse:Security" => {
              'xmlns:wsse' => WSENamespace,
+             'xmlns:wsu' => WSUNamespace,
              'soapenv:mustUnderstand' => "1",
           } },
         })
@@ -82,10 +88,9 @@ module Savon
         {
           "wsse:BinarySecurityToken" => Base64.encode64(certs.cert.to_der).gsub("\n", ''),
           :attributes! => { "wsse:BinarySecurityToken" => {
-            "wsu:Id" => security_token_id,
-            'EncodingType' => Base64EncodingType,
             'ValueType' => X509v3ValueType,
-            "xmlns:wsu" => WSUNamespace,
+            'EncodingType' => Base64EncodingType,
+            "wsu:Id" => security_token_id
           } }
         }
       end
@@ -101,7 +106,7 @@ module Savon
 
         {
           "dsig:Signature" => sig,
-          :attributes! => { "dsig:Signature" => { "xmlns" => SignatureNamespace, 'xmlns:dsig' => SignatureNamespace } },
+          :attributes! => { "dsig:Signature" => { 'xmlns:dsig' => SignatureNamespace } },
         }
       end
 
@@ -112,13 +117,10 @@ module Savon
               "wsse:Reference/" => nil,
               :attributes! => { "wsse:Reference/" => {
                 "ValueType"  => X509v3ValueType,
-                "URI"        => "##{security_token_id}",
-                "xmlns:wsse" => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "xmlns"      => "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" }
+                "URI"        => "##{security_token_id}" }
               }
             },
-            :attributes! => { "wsse:SecurityTokenReference" => { "xmlns"      => "http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                                                                 "xmlns:wsse" => "http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" } },
+            :attributes! => { "wsse:SecurityTokenReference" => {} },
           },
         }
       end
@@ -135,13 +137,14 @@ module Savon
             "dsig:CanonicalizationMethod/" => nil,
             "dsig:SignatureMethod/" => nil,
             "dsig:Reference" => [
-              { "dsig:DigestValue" => timestamp_digest }.merge(signed_info_transforms).merge(signed_info_digest_method),
-              { "dsig:DigestValue" => body_digest }.merge(signed_info_transforms).merge(signed_info_digest_method),
+#              signed_info_transforms.merge( signed_info_digest_method ).merge({ "dsig:DigestValue" => timestamp_digest }),
+              signed_info_transforms.merge( signed_info_digest_method ).merge({ "dsig:DigestValue" => body_digest }),
             ],
             :attributes! => {
               "dsig:CanonicalizationMethod/" => { "Algorithm" => ExclusiveXMLCanonicalizationAlgorithm },
-              "dsig:SignatureMethod/" => { "Algorithm" => RSASHA1SignatureAlgorithm },
-              "dsig:Reference" => { "URI" => ["##{timestamp_id}", "##{body_id}"] },
+              "dsig:SignatureMethod/" => { "Algorithm" => @signature_algorithm },
+#              "dsig:Reference" => { "URI" => ["##{timestamp_id}", "##{body_id}"] },
+              "dsig:Reference" => { "URI" => ["##{body_id}"] },
             },
             :order! => [ "dsig:CanonicalizationMethod/", "dsig:SignatureMethod/", "dsig:Reference" ],
           },
@@ -159,14 +162,23 @@ module Savon
             "wsu:Expires" => (now + 60 * 5).xs_datetime,
             :order! => ["wsu:Created", "wsu:Expires"],
           },
-          :attributes! => { "wsu:Timestamp" => { "wsu:Id" => timestamp_id, "xmlns:wsu" => WSUNamespace } },
+          :attributes! => { "wsu:Timestamp" => { "wsu:Id" => timestamp_id } },
         }
       end
 
       def the_signature
         raise MissingCertificate, "Expected a private_key for signing" unless certs.private_key
         xml = canonicalize("SignedInfo")
-        signature = certs.private_key.sign(OpenSSL::Digest::SHA1.new, xml)
+
+        case @signature_algorithm
+        when RSASHA1SignatureAlgorithm
+          signature = certs.private_key.sign(OpenSSL::Digest::SHA1.new, xml)
+        when RSASHA256SignatureAlgorithm
+          signature = certs.private_key.sign(OpenSSL::Digest::SHA256.new, xml)
+        else
+          signature = certs.private_key.sign(OpenSSL::Digest::SHA1.new, xml)
+        end
+
         Base64.encode64(signature).gsub("\n", '') # TODO: DRY calls to Base64.encode64(...).gsub("\n", '')
       end
 
@@ -185,11 +197,18 @@ module Savon
       end
 
       def xml_digest(xml_element)
-        Base64.encode64(OpenSSL::Digest::SHA1.digest(canonicalize(xml_element))).strip
+        case @digest_algorithm
+        when SHA1DigestAlgorithm
+          Base64.encode64(Digest::SHA1.digest( canonicalize( xml_element ))).strip
+        when SHA256DigestAlgorithm
+          Base64.encode64(Digest::SHA2.digest( canonicalize( xml_element ))).strip
+        else
+          Base64.encode64(Digest::SHA1.digest( canonicalize( xml_element ))).strip
+        end
       end
 
       def signed_info_digest_method
-        { "dsig:DigestMethod/" => nil, :attributes! => { "dsig:DigestMethod/" => { "Algorithm" => SHA1DigestAlgorithm } } }
+        { "dsig:DigestMethod/" => nil, :attributes! => { "dsig:DigestMethod/" => { "Algorithm" => @digest_algorithm } } }
       end
 
       def signed_info_transforms
